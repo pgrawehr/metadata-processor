@@ -602,7 +602,8 @@ namespace nanoFramework.Tools.MetadataProcessor
                 }
 
                 foreach (var implement in SortTypesAccordingUsagesImpl(
-                    type.Interfaces.Select(itf => itf.InterfaceType.Resolve())
+                    type.Interfaces.Select(itf => itf.InterfaceType.Resolve() ?? 
+                                                  throw new ArgumentException($"Unable to resolve {itf.InterfaceType}"))
                         .Where(item => item.Module.FileName == mainModuleName),
                     mainModuleName, processedTypes))
                 {

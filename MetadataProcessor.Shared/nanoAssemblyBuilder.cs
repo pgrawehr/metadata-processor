@@ -578,24 +578,35 @@ namespace nanoFramework.Tools.MetadataProcessor
                     // Anyways, as this a minimize operation, it's preferable to have both rather than none.
 
                     // start searching for metadata token
-                    TypeReference ts1 = _tablesContext.TypeSpecificationsTable.TryGetTypeSpecification(token);
+                    var ts1 = _tablesContext.AssemblyDefinition.MainModule.LookupToken(token);
 
-                    if (ts1 != null)
+                    if (ts1 is TypeReference tr1)
+                    {
+                        set.Add(token);
+                        if (_tablesContext.TypeSpecificationsTable.TryGetTypeSpecification(token) == null)
+                        {
+                            _tablesContext.TypeSpecificationsTable.AddIfNew(tr1, (ushort)token.RID);
+                        }
+                    }
+
+                    TypeReference ts2 = _tablesContext.TypeSpecificationsTable.TryGetTypeSpecification(token);
+
+                    if (ts2 != null)
                     {
                         // found it, let's add it
                         set.Add(token);
                     }
 
                     // now try to find the TypeSpec from the "fabricated" token, using the RID 
-                    TypeReference ts2 = _tablesContext.TypeSpecificationsTable.TryGetTypeReferenceByIndex((ushort)token.RID);
+                    TypeReference ts3 = _tablesContext.TypeSpecificationsTable.TryGetTypeReferenceByIndex((ushort)token.RID);
 
-                    if (ts2 != null)
+                    if (ts3 != null)
                     {
-                        set.Add(ts2.MetadataToken);
+                        set.Add(ts3.MetadataToken);
                     }
 
                     // sanity check
-                    Debug.Assert(ts1 != null || ts2 != null);
+                    Debug.Assert(ts1 != null || ts2 != null || ts3 != null);
 
                     break;
 

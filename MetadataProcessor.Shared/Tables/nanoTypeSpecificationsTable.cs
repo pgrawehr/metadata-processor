@@ -347,6 +347,11 @@ namespace nanoFramework.Tools.MetadataProcessor
                             // register return‐type...
                             ExpandNestedTypeSpecs(mr.ReturnType);
 
+                            if (instr.OpCode.Code == Code.Newobj)
+                            {
+                                ExpandNestedTypeSpecs(mr.DeclaringType);
+                            }
+
                             // ... and parameters
                             foreach (ParameterDefinition p in mr.Parameters)
                             {
@@ -460,7 +465,7 @@ namespace nanoFramework.Tools.MetadataProcessor
         /// <summary>
         /// Helper to add to `_idByTypeSpecifications` only if we haven’t already seen it
         /// </summary>
-        private void AddIfNew(
+        public void AddIfNew(
             TypeReference tr,
             ushort sigId)
         {

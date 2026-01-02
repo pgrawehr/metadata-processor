@@ -41,10 +41,10 @@ namespace nanoFramework.Tools.MetadataProcessor.Console
                     _assemblyDefinition = AssemblyDefinition.ReadAssembly(fileName,
                         new ReaderParameters { AssemblyResolver = new LoadHintsAssemblyResolver(_loadHints) });
                 }
-                catch (Exception)
+                catch (Exception x)
                 {
                     System.Console.Error.WriteLine(
-                        "Unable to parse input assembly file '{0}' - check if path and file exists.", fileName);
+                        "Unable to parse input assembly file '{0}' - check if path and file exists: {1}", fileName, x.ToString());
                     Environment.Exit(1);
                 }
             }
@@ -149,9 +149,9 @@ namespace nanoFramework.Tools.MetadataProcessor.Console
 
                     skeletonGenerator.GenerateSkeleton();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    System.Console.Error.WriteLine("Unable to generate skeleton files.");
+                    System.Console.Error.WriteLine("Unable to generate skeleton files");
                     throw;
                 }
             }
@@ -201,8 +201,7 @@ namespace nanoFramework.Tools.MetadataProcessor.Console
 
                 if ((arg == "-h" ||
                     arg == "-help" ||
-                    arg == "?") &&
-                    (i + 1 < args.Length))
+                    arg == "?"))
                 {
                     System.Console.WriteLine("");
                     System.Console.WriteLine("-parse <path-to-assembly-file>                        Analyses .NET assembly.");
