@@ -30,6 +30,8 @@ namespace nanoFramework.Tools.MetadataProcessor.Console
 
             internal bool VerboseMinimize { get; set; }
 
+            internal bool Validate { get; set; } = true;
+
             public bool DumpMetadata { get; internal set; } = false;
 
             public void Parse(string fileName)
@@ -58,6 +60,11 @@ namespace nanoFramework.Tools.MetadataProcessor.Console
                     if (Verbose) System.Console.WriteLine("Compiling assembly...");
 
                     _assemblyBuilder = new nanoAssemblyBuilder(_assemblyDefinition, _classNamesToExclude, VerboseMinimize, isCoreLibrary);
+
+                    if (Validate)
+                    {
+                        nanoAssemblyVerifier.Verify(_assemblyBuilder);
+                    }
 
                     using (var stream = File.Open(Path.ChangeExtension(fileName, "tmp"), FileMode.Create, FileAccess.ReadWrite))
                     using (var writer = new BinaryWriter(stream))
